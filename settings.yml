@@ -1,0 +1,84 @@
+search_banner_title:
+  type: string
+  default: Community forum
+  description: Search banner title
+
+search_banner_description:
+  type: string
+  default: Welcome! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  description: Search banner description
+
+search_banner_link:
+  type: string
+  default: https://www.google.com
+  description: Search banner link
+
+search_banner_link_text:
+  type: string
+  default: Community guidelines >
+  description: Search banner link text
+
+cta_title:
+  type: string
+  default: Hire an Expert!
+  description: HP cta title
+
+cta_sub_title:
+  type: string
+  default: Need a hand? Lets us help you.
+  description: HP cta sub title
+
+cta_button_text:
+  type: string
+  default: Cta
+  description: HP cta button text
+
+cta_button_link:
+  type: string
+  default: https://www.google.com
+  description: HP cta button link
+
+latest_topics_amount:
+  default: 10
+  min: 1
+  max: 20
+
+category_topics:
+  type: string
+  default: General
+  description: HP category to show topics
+
+category_topics_amount:
+  default: 10
+  min: 1
+  max: 20
+
+left_external_category_title:
+  type: string
+  default: Knowledge base
+  description: The left external category title
+
+left_external_category_description:
+  type: string
+  default: Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur elit.Lorem ipsum dolor sit ametadipiscing elit.
+  description: The left external category description
+
+left_external_category_url:
+  type: string
+  default: https://support.monday.com/hc/en-us/articles/360003522920
+  description: The left external category url
+
+right_external_category_title:
+  type: string
+  default: Webinars
+  description: The right external category title
+
+right_external_category_description:
+  type: string
+  default: Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur elit.Lorem ipsum dolor sit ametadipiscing elit.
+  description: The right external category description
+
+right_external_category_url:
+  type: string
+  default: https://www.monday.com/webinars
+  description: The right external category url

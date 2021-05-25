@@ -1,0 +1,709 @@
+<!-- general page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  api.onPageChange((url, title) => {
+    if (url === "/categories" || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942") {
+      if (url === "/categories" || url === "/categories?preview_theme_id=4942"){
+        $(".categories-show-button-wrapper").css("display","block");
+        if ($(".category-box-container").length > 6){
+          let height = ($(".category-box-container").outerHeight() * 2) + (parseInt($('.category-box-container').css('margin-bottom')) * 2) - 10;
+          let $categoriesContainer = $(".custom-categories-boxes-container");
+          $categoriesContainer.css("height",height);
+          $categoriesContainer.css("max-height",height);
+          if ($(".categories-show-button-wrapper").length == 0){
+            let $buttonWrapper = $(document.createElement('div'));
+            $buttonWrapper.addClass('categories-show-button-wrapper');
+            let $showMoreButton = $(document.createElement('button'));
+            $showMoreButton.addClass('show-more-categories-button');
+            let $showLessButton = $(document.createElement('button'));
+            $showLessButton.addClass('show-less-categories-button hide');
+            $buttonWrapper.append($showMoreButton);
+            $buttonWrapper.append($showLessButton);
+            $categoriesContainer.parent().append($buttonWrapper);
+            let $moreButtonIcon = $(document.createElement('i'));
+            let $lessButtonIcon = $(document.createElement('i'));
+            $moreButtonIcon.addClass('show-categories-button-icon');
+            $lessButtonIcon.addClass('show-categories-button-icon');
+            $('.show-more-categories-button').html("Show more categories");
+            $('.show-more-categories-button').append($moreButtonIcon);
+            $('.show-less-categories-button').html("Show less categories");
+            $('.show-less-categories-button').append($lessButtonIcon);
+            $('.categories-show-button-wrapper button').on('click', function(e){
+              e.preventDefault();
+              if ($(this).hasClass('show-more-categories-button')){
+                let categoryHeight = height/2;
+                let categoriesRowsNum = Math.ceil($(".category-box-container").length/3);
+                let categoriesHeight = categoriesRowsNum * categoryHeight;
+                $('.custom-categories-boxes-container').css("height",categoriesHeight);
+                $('.custom-categories-boxes-container').css("max-height",categoriesHeight);
+              } else {
+                $('.custom-categories-boxes-container').css("height",height);
+                $('.custom-categories-boxes-container').css("max-height",height);
+              }
+              $('.categories-show-button-wrapper button').each(function(index,obj){
+                $(obj).toggleClass('hide');
+              });
+            });
+          } else{
+            if ($('.show-more-categories-button').hasClass('hide')){
+              $('.show-more-categories-button').removeClass('hide');
+            }
+            if (!$('.show-less-categories-button').hasClass('hide')){
+              $('.show-less-categories-button').addClass('hide');
+            }
+          }
+        }
+      }
+    }
+  });
+  api.modifyClass("route:application", {
+    actions: {
+      willTransition() {
+        // run core code
+        this._super(...arguments);
+        $(".categories-show-button-wrapper").css("display","none");
+      }
+    }
+  });
+</script>
+
+<!-- custom nav links -->
+<script type="text/discourse-plugin" version="0.4">
+  api.decorateWidget('header-icons:before', helper => {
+      return helper.h('li.get-started-button-wrapper', [
+          helper.h('a.get-started-button', {
+              title: 'Get Started',
+              text: 'Get Started >'
+          }),
+      ]);
+  });
+  </script>
+
+<!-- search widget -->
+<script type="text/discourse-plugin" version="0.8">
+  const searchMenuWidget = api.container.factoryFor('widget:search-menu');
+  const corePanelContents = searchMenuWidget.class.prototype['panelContents'];
+  api.reopenWidget('search-menu', {
+    buildKey: function(attrs) {
+      let type = attrs.formFactor || 'menu'
+      return `search-${type}`
+    },
+    defaultState: function(attrs) {
+      return {
+        formFactor: attrs.formFactor || 'menu',
+        showHeaderResults: false
+      }
+    },
+    html: function() {
+      if (this.state.formFactor === 'widget') {
+        return this.panelContents();
+      } else {
+        return this.attach('menu-panel', {
+          maxWidth: 500,
+          contents: () => this.panelContents()
+        });
+      }
+    },
+    clickOutside() {
+       if (!this.vnode.hooks['widget-mouse-down-outside']) {
+         return this.mouseDownOutside();
+       }
+     },
+     mouseDownOutside() {
+       const formFactor = this.state.formFactor;
+       if (formFactor === 'menu') {
+         return this.sendWidgetAction('toggleSearchMenu');
+       } else {
+         this.state.showHeaderResults = false;
+         this.scheduleRerender();
+       }
+     },
+    click: function() {
+      const formFactor = this.state.formFactor;
+      if (formFactor === 'widget') {
+        this.showResults();
+      }
+    },
+    showResults: function() {
+      this.state.showHeaderResults = true;
+      this.scheduleRerender();
+    },
+    linkClickedEvent: function() {
+      const formFactor = this.state.formFactor;
+      if (formFactor === 'widget') {
+        $('#search-term').val('');
+    $('.search-placeholder').css('visibility', 'visible');
+        this.state.showHeaderResults = false;
+        this.scheduleRerender();
+      }
+    },
+    panelContents: function() {
+      const formFactor = this.state.formFactor;
+      let showHeaderResults = this.state.showHeaderResults == null || this.state.showHeaderResults === true;
+      let contents = [];
+
+      if (formFactor === 'widget') {
+       contents.push(this.attach('button', {
+           icon: 'search',
+           className: 'search-icon',
+           action: 'showResults'
+       }));
+     }
+      contents = contents.concat(...corePanelContents.call(this));
+      let results = contents.find(w => w.name == 'search-menu-results');
+       if (results && results.attrs.results) {
+         $('.search-menu.search-header').addClass('has-results');
+       } else {
+         $('.search-menu.search-header').removeClass('has-results');
+       }
+       if (formFactor === 'menu' || showHeaderResults) {
+         return contents;
+       } else {
+         return contents.filter((widget) => {
+           return widget.name != 'search-menu-results' && widget.name != 'search-context';
+         });
+       }
+    }
+  });
+  api.createWidget("search-widget", {
+    tagName: "div.search-widget",
+  });
+  api.decorateWidget('search-widget:after', function(helper) {
+    const searchWidget = helper.widget,
+    appController = helper.register.lookup('controller:application'),
+    searchMenuVisible = searchWidget.state.searchVisible;
+    if (!searchMenuVisible && !searchWidget.attrs.topic) {
+      return helper.attach('search-menu', {
+        contextEnabled: searchWidget.state.contextEnabled,
+        formFactor: 'widget'
+      });
+    }
+  });
+</script>
+
+<!-- search page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  api.registerConnectorClass("below-site-header", "search-banner", {
+    setupComponent(args, component) {
+      api.onPageChange((url) => {
+        if (url === "/" || url === "/?preview_theme_id=4942" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+          component.set("displaySearchBanner", true); 
+        } else {  
+          component.set("displaySearchBanner", false); 
+        }
+      });
+    }
+  });
+</script>
+<!-- search banner -->
+<script type="text/x-handlebars" data-template-name="/connectors/below-site-header/search-banner">
+  {{#if displaySearchBanner}} 
+    <div class="custom-search-banner">
+      <div class="custom-search-banner-bg wrap">
+        <div class="wrap custom-search-banner-wrap">
+          <h1>{{theme-setting 'search_banner_title'}}</h1>
+          <p>{{theme-setting 'search_banner_description'}}</p>
+          <a target="_blank" href="{{theme-setting 'search_banner_link'}}">{{theme-setting 'search_banner_link_text'}}</a>
+        </div>
+      </div>
+    </div>
+    <div class="custom-search-bar wrap">
+      {{mount-widget widget="search-widget"}}
+    </div>
+  {{/if}}
+</script>
+
+<!-- page nav page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  const navigationComponent = require('discourse/components/d-navigation').default;
+  navigationComponent.reopen({
+    isHomepage: function() {
+      return (window.location.pathname === "/" || window.location.pathname === "/?preview_theme_id=4942" || window.location.pathname === "/categories" || window.location.pathname === "/categories?preview_theme_id=4942" || window.location.pathname === "/latest" || window.location.pathname === "/latest?preview_theme_id=4942")
+    }.property()
+  });
+  api.onPageChange((url, title) => {
+    if (url === "/" || url === "/?preview_theme_id=4942"){
+      $(".navigation #navigation-bar li a[href='/latest']").addClass("active");
+      $(".navigation #navigation-bar li:nth-child(2)").addClass("active");
+    }
+    if (url === "/categories" || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942") {
+      $(".navigation #navigation-bar li a").each(function(index, obj) {
+        $(obj).removeClass("active");
+        $(obj).parent().removeClass("active");
+        if (url.startsWith($(obj).attr('href'))){
+          $(obj).addClass("active");
+          $(obj).parent().addClass("active");
+        }
+      });
+    }
+  });
+</script>
+<!-- page nav -->
+<script type="text/x-handlebars" data-template-name="components/d-navigation">
+  {{#if isHomepage}}
+    {{partial 'components/navigation-homepage'}}
+  {{else}}
+    {{partial 'components/d-navigation-orig'}}
+  {{/if}}
+</script>
+<script type="text/x-handlebars" data-template-name="components/navigation-homepage">
+  <div class="container">
+    <div class="navigation">
+      <ul id="navigation-bar" class="nav nav-pills">
+        <li><a href="/categories">Categories</a></li>
+        <li><a href="/latest">Latest</a></li>
+      </ul>
+      {{create-topic-button
+        canCreateTopic=canCreateTopic
+        action=(action "clickCreateTopicButton")
+        disabled=createTopicButtonDisabled
+        label=createTopicLabel
+        btnClass=createTopicClass
+        canCreateTopicOnTag=canCreateTopicOnTag
+      }}
+    </div>
+  </div>
+</script>
+<script type="text/x-handlebars" data-template-name="components/d-navigation-orig">
+{{bread-crumbs categories=categories category=category noSubcategories=noSubcategories tag=tag additionalTags=additionalTags}}
+{{#unless additionalTags}}
+  {{!-- nav bar doesn't work with tag intersections --}}
+  {{navigation-bar navItems=navItems filterMode=filterMode category=category}}
+{{/unless}}
+<div class="navigation-controls">
+  {{#if showCategoryAdmin}}
+    {{categories-admin-dropdown
+      onChange=(action "selectCategoryAdminDropdownAction")
+      options=(hash
+        triggerOnChangeOnTab=false
+      )
+    }}
+  {{/if}}
+  {{#if category}}
+    {{#unless tag}}
+      {{!-- don't show category edit button on tag pages --}}
+      {{#if showCategoryEdit}}
+        {{d-button
+          class="btn-default edit-category"
+          action=editCategory
+          icon="wrench"
+          label="category.edit"}}
+      {{/if}}
+    {{/unless}}
+  {{/if}}
+  {{#if tag}}
+    {{#if showToggleInfo}}
+      {{d-button icon="tag" class="btn-default" label="tagging.info" action=toggleInfo id="show-tag-info"}}
+    {{/if}}
+  {{/if}}
+  {{plugin-outlet name="before-create-topic-button" tagName=""
+    args=(hash
+      canCreateTopic=canCreateTopic
+      createTopicDisabled=createTopicDisabled
+      createTopicLabel=createTopicLabel)
+  }}
+  {{create-topic-button
+    canCreateTopic=canCreateTopic
+    action=(action "clickCreateTopicButton")
+    disabled=createTopicButtonDisabled
+    label=createTopicLabel
+    btnClass=createTopicClass
+    canCreateTopicOnTag=canCreateTopicOnTag
+  }}
+  {{#if category}}
+    {{#unless tag}}
+      {{!-- don't show category notification menu on tag pages --}}
+      {{#if showCategoryNotifications}}
+        {{category-notifications-button
+          value=category.notification_level
+          category=category
+          onChange=(action "changeCategoryNotificationLevel")
+        }}
+      {{/if}}
+    {{/unless}}
+  {{/if}}
+  {{#if tag}}
+    {{#unless category}}
+      {{!-- don't show tag notification menu on category pages --}}
+      {{#if showTagNotifications}}
+        {{tag-notifications-button
+          onChange=changeTagNotificationLevel
+          value=tagNotification.notification_level
+        }}
+      {{/if}}
+    {{/unless}}
+  {{/if}}
+</div>
+</script>
+
+<!-- categories -->
+<script type="text/x-handlebars" data-template-name="discovery/categories">
+  <div class="custom-categories-boxes-container">
+    {{#each model.categories as |c|}}
+    {{#unless c.isMuted}}
+      <div class="category-box-container">
+        <div class="category-image-container">
+          <a class="category-box-link" href={{c.url}}>
+            {{cdn-img src=c.uploaded_logo.url class="category-box-image"}}
+            <div class="image-bg-container">
+            </div>
+          </a>
+        </div>
+        <div class="category-title-container">
+          <h3 class="category-title">{{c.name}}</h3>
+        </div>
+        <div class="category-description-container">
+          <p class="category-description">{{html-safe c.description_excerpt}}</p>
+        </div>
+        <a class="category-box-link" href={{c.url}}>
+          <span>
+            {{c.name}} >
+          </span>
+        </a>
+      </div>
+    {{/unless}}
+  {{/each}}
+  </div>
+</script>
+<script type="text/x-handlebars" data-template-name="discovery/categories">
+
+  <div class="custom-categories-boxes-container">
+    {{#each model.categories as |c|}}
+    {{#unless c.isMuted}}
+      <div class="category-box-container">
+        <div class="category-image-container">
+          <a class="category-box-link" href={{c.url}}>
+            {{cdn-img src=c.uploaded_logo.url class="category-box-image"}}
+            <div class="image-bg-container">
+            </div>
+          </a>
+        </div>
+        <div class="category-title-container">
+          <h3 class="category-title">{{c.name}}</h3>
+        </div>
+        <div class="category-description-container">
+          <p class="category-description">{{html-safe c.description_excerpt}}</p>
+        </div>
+        <a class="category-box-link" href={{c.url}}>
+          <span>
+            {{c.name}} >
+          </span>
+        </a>
+      </div>
+    {{/unless}}
+  {{/each}}
+  </div>
+</script>
+
+<!-- topics -->
+<script type="text/x-handlebars" data-template-name="discovery/topics">
+  <div class="topics-container">
+    {{#each model.topics as |topic|}}
+    <div class="topic-container">
+      <div class="topic-image">
+        {{raw "list/posters-column" posters=topic.featuredUsers}}
+      </div>
+      <div class="topic-info">
+        {{~topic-link topic class="raw-link raw-topic-link"}}
+      </div>
+      <div class="topic-category">
+        {{category-link topic.category}}
+      </div>
+      <div class="topic-activity">
+        {{raw "list/activity-column" topic=topic class="num" tagName="td"}}
+      </div>
+      <div class="topic-reviews">
+        {{raw "list/posts-count-column" topic=topic}}
+      </div>
+    </div>
+  {{/each}}
+  </div>
+</script>
+
+<!-- hp above footer cta banner page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  api.registerConnectorClass("above-footer", "hp-above-footer-cta-banner", {
+    setupComponent(args, component) {
+      api.onPageChange((url) => {
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+          component.set("displayCtaBanner", true); 
+        } else {  
+          component.set("displayCtaBanner", false); 
+        }
+      });
+    }
+  });
+</script>
+<!-- hp above footer cta banner -->
+<script type="text/x-handlebars" data-template-name="/connectors/above-footer/hp-above-footer-cta-banner">
+  {{#if displayCtaBanner}}
+    <div class="container wrap">
+      <div class="custom-cta-banner" >
+        <h1>{{theme-setting 'cta_title'}}</h1>
+        <span>{{theme-setting 'cta_sub_title'}}</span>
+        <a target="_blank" href="{{theme-setting 'cta_button_link'}}">{{theme-setting 'cta_button_text'}}</a>
+      </div>
+    </div>
+  {{/if}}
+</script>
+
+<!-- hp above footer category posts page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  api.registerConnectorClass("above-footer", "hp-above-footer-category-topics", {
+    setupComponent(args, component) {
+      api.onPageChange((url) => {
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+          component.set("displayCategoryTopics", true); 
+        } else {  
+          component.set("displayCategoryTopics", false); 
+        }
+      });
+    }
+  });
+</script>
+<!-- hp above footer category posts component -->
+<script type="text/discourse-plugin" version="0.8">
+  const ajax = require('discourse/lib/ajax').ajax;
+  const Topic = require('discourse/models/topic').default;
+  api.registerConnectorClass('above-footer', 'hp-above-footer-category-topics', {
+    setupComponent(args, component) {
+      api.onPageChange((url, title) => {
+        if ((url == "/") || (url == "/latest") || url === "/latest?preview_theme_id=4942" || url === "/?preview_theme_id=4942" || (url == "/categories") || url === "/categories?preview_theme_id=4942"){
+          component.set('displayCategoryTopics', true);
+          component.set("loadingTopics", true);
+          component.set("categoryTitle", settings.category_topics);
+          ajax("/c/"+settings.category_topics+".json").then (function(result){
+            let categoryTopics = [];
+            var featuredUsers = result.users;
+            result.topic_list.topics.slice(0,settings.category_topics_amount).forEach(function(topic){
+              topic.posters.forEach(function(poster){
+                poster.user = $.grep(featuredUsers, function(e){ return e.id == poster.user_id; })[0];
+              });
+              categoryTopics.push(Topic.create(topic));
+            });
+            component.set("loadingTopics", false);
+            component.set('categoryTopics', categoryTopics);
+          });
+        } else {
+          component.set('displayCategoryTopics', false);
+        }
+      });
+    }
+  });
+</script>
+<!-- hp above footer category posts template -->
+<script type="text/x-handlebars" data-template-name="/connectors/above-footer/hp-above-footer-category-topics">
+  {{#if displayCategoryTopics}}
+    <div class="container wrap">
+      <div class="custom-category-topics-container">
+        <div class="custom-category-topics-title">
+          {{categoryTitle}}
+        </div>
+        <a href="/c/{{categoryTitle}}">
+          Read all {{categoryTitle}} >
+        </a>
+        {{#if displayCategoryTopics}}
+          <div class="custom-category-topics-wrapper">
+            {{conditional-loading-spinner condition=loadingTopics}}
+            {{#unless loadingTopics}}
+              <div class="category-topics-container">
+                {{#each categoryTopics as |topic|}}
+                  <div class="category-topic-container">
+                    <div class="topic-info">
+                      {{~topic-link topic class="raw-link raw-topic-link"}}
+                      <div class="topic-category">
+                        {{category-link topic.category}}
+                      </div>
+                    </div>
+                    <div class="topic-image">
+                      {{raw "list/posters-column" posters=topic.featuredUsers}}
+                    </div>
+                    <div class="topic-activity">
+                      {{raw "list/activity-column" topic=topic class="num" tagName="td"}}
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            {{/unless}}
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
+</script>
+
+<!-- hp above footer external cats page settings -->
+<script type="text/discourse-plugin" version="0.8">
+  api.registerConnectorClass("above-footer", "hp-above-footer-external-cats", {
+    setupComponent(args, component) {
+      api.onPageChange((url) => {
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+          component.set("displayExternalCats", true); 
+        } else {  
+          component.set("displayExternalCats", false); 
+        }
+      });
+    }
+  });
+</script>
+<!-- hp above footer external cats template -->
+<script type="text/x-handlebars" data-template-name="/connectors/above-footer/hp-above-footer-external-cats">
+  {{#if displayExternalCats}}
+    <div class="container wrap"> 
+      <div class="custom-external-cats">
+        <div class="external-cat knowledge-base-cat">
+          <a target="_blank" href="{{theme-setting 'left_external_category_url'}}">
+            <div class="image-bg-container">
+            </div>
+            <div class="external-cat-info">
+              <h3 class="external-cat-title">{{theme-setting 'left_external_category_title'}}</h3>
+              <p class="external-cat-description">
+                {{theme-setting 'left_external_category_description'}}
+              </p>
+            </div>
+          </a>
+        </div>
+        <div class="external-cat webinars-cat">
+          <a target="_blank" href="{{theme-setting 'right_external_category_url'}}">
+            <div class="image-bg-container">
+            </div>
+            <div class="external-cat-info">
+              <h3 class="external-cat-title">{{theme-setting 'right_external_category_title'}}</h3>
+              <p class="external-cat-description">
+                {{theme-setting 'right_external_category_description'}}
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</script>
+
+<!-- <script type="text/x-handlebars" data-template-name="navigation/category">
+  <div class="custom-category-container wrap">
+    <div class="category-header-container">
+      <div class="category-image-container">
+        {{cdn-img
+          src=category.uploaded_logo.url
+          class="category-image"
+        }}
+        <div class="category-image-bg">bg</div>
+      </div>
+      <div class="category-info-container">
+        <div class="category-title">
+          <h3>{{category.name}}</h3>
+        </div>
+        {{#if category.description}}
+        <div class="category-description">
+          <p>{{category.description}}</p>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    <div class="filter-container">
+    </div>
+  </div>
+</script> -->
+
+<script type="text/x-handlebars" data-template-name="navigation/category">
+  {{add-category-tag-classes category=category tagName=""}}
+  <section class="category-heading">
+    <div class="category-header-container">
+      <div class="category-image-container">
+        {{cdn-img
+          src=category.uploaded_logo.url
+          class="category-image"
+        }}
+        <!-- <div class="category-image-bg">bg</div> -->
+      </div>
+      <div class="category-info-container">
+        <div class="category-title">
+          <h3>{{category.name}}</h3>
+        </div>
+        {{#if category.description}}
+        <div class="category-description">
+          <p>{{category.description}}</p>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </section>
+{{#d-section class="navigation-container category-navigation"}}
+  {{d-navigation
+    category=category
+    filterMode=filterMode
+    noSubcategories=noSubcategories
+    canCreateTopic=canCreateTopic
+    createTopic=(route-action "createTopic")
+    createTopicDisabled=cannotCreateTopicOnCategory
+    hasDraft=currentUser.has_topic_draft
+    editCategory=(route-action "editCategory" category)}}
+{{/d-section}}
+</script>
+<!-- 
+<script type="text/x-handlebars" data-template-name="components/bread-crumbs">
+  {{#each categoryBreadcrumbs as |breadcrumb|}}
+    {{#if breadcrumb.hasOptions}}
+      {{category-drop
+        category=breadcrumb.category
+        categories=breadcrumb.options
+        tagId=tag.id
+        options=(hash
+          parentCategory=breadcrumb.parentCategory
+          subCategory=breadcrumb.isSubcategory
+          noSubcategories=breadcrumb.noSubcategories
+          autoFilterable=true
+        )
+      }}
+    {{/if}}
+  {{/each}}
+  {{#if siteSettings.tagging_enabled}}
+    {{#if additionalTags}}
+      {{tags-intersection-chooser
+        currentCategory=category
+        mainTag=tag.id
+        additionalTags=additionalTags
+        options=(hash
+          categoryId=category.id
+        )
+      }}
+    {{else}}
+      {{tag-drop
+        currentCategory=category
+        noSubcategories=noSubcategories
+        tagId=tag.id
+      }}
+    {{/if}}
+  {{/if}}
+</script>
+
+<script type="text/x-handlebars" data-template-name="components/navigation-bar">
+  <div class="select">
+    <div class="dropdown-button">
+      sort by
+    </div>
+    <div class="selected">
+    </div>
+    <div class="select-list">
+      {{#each navItems as |navItem|}}
+        {{navigation-item content=navItem filterMode=filterMode category=category}}
+      {{/each}}
+    </div>
+  </div>
+  <div class="custom-search-bar wrap">
+    {{mount-widget widget="search-widget"}}
+  </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="components/navigation-item">
+  {{#if activeClass}}
+    <div>selected:</div>
+  {{/if}}
+  <a href={{hrefLink}} class={{activeClass}}>
+    {{#if hasIcon}}
+      <span class={{content.name}}></span>
+    {{/if}}
+    {{content.displayName}}
+  </a>
+</script> -->
+

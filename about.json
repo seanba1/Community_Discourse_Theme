@@ -1,0 +1,45 @@
+{
+  "name": "Community",
+  "component": false,
+  "license_url": null,
+  "about_url": null,
+  "authors": null,
+  "theme_version": null,
+  "minimum_discourse_version": null,
+  "maximum_discourse_version": null,
+  "assets": {
+    "announcment_cat": "assets/announcment_cat.png",
+    "dach_cat": "assets/dach_cat.png",
+    "developers_cat": "assets/developers_cat.png",
+    "expert_bg": "assets/expert_bg.png",
+    "faqs_cat": "assets/faqs_cat.png",
+    "feedback_cat": "assets/feedback_cat.png",
+    "header_bg": "assets/header_bg.png",
+    "left_external_cat": "assets/knowledge_base_cat.png",
+    "right_external_cat": "assets/wbinars_cat.png",
+    "workflow_cat": "assets/workflow_cat.png",
+    "bubble_bg": "assets/bubble_bg.png",
+    "default_cat_bg": "assets/default_cat_bg.png",
+    "arrow_icon": "assets/arrow.svg",
+    "sofia_bold": "assets/Mostardesign-SofiaPro-Bold.woff",
+    "sofia_regular": "assets/Mostardesign-SofiaProRegular.woff",
+    "roboto_light": "assets/roboto-light.woff"
+  },
+  "color_schemes": {
+    "New Color Scheme": {
+      "primary": "333333",
+      "secondary": "ffffff",
+      "tertiary": "009AFF",
+      "quaternary": "009AFF",
+      "header_background": "ffffff",
+      "header_primary": "333333",
+      "highlight": "CDEAFF",
+      "danger": "E44259",
+      "success": "00CA72",
+      "love": "009AFF"
+    }
+  },
+  "modifiers": {
+  },
+  "learn_more": "https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966"
+}
