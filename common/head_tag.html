@@ -1,8 +1,8 @@
 <!-- general page settings -->
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
-    if (url === "/categories" || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942") {
-      if (url === "/categories" || url === "/categories?preview_theme_id=4942"){
+    if (url === "/categories" || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988") {
+      if (url === "/categories" || url === "/categories?preview_theme_id=4988"){
         $(".categories-show-button-wrapper").css("display","block");
         if ($(".category-box-container").length > 6){
           let height = ($(".category-box-container").outerHeight() * 2) + (parseInt($('.category-box-container').css('margin-bottom')) * 2) - 10;
@@ -109,6 +109,7 @@
        }
      },
      mouseDownOutside() {
+      $('.search-input').removeClass('has-results');
        const formFactor = this.state.formFactor;
        if (formFactor === 'menu') {
          return this.sendWidgetAction('toggleSearchMenu');
@@ -120,6 +121,7 @@
     click: function() {
       const formFactor = this.state.formFactor;
       if (formFactor === 'widget') {
+        $('.search-input').addClass('has-results');
         this.showResults();
       }
     },
@@ -151,9 +153,9 @@
       contents = contents.concat(...corePanelContents.call(this));
       let results = contents.find(w => w.name == 'search-menu-results');
        if (results && results.attrs.results) {
-         $('.search-menu.search-header').addClass('has-results');
+         $('.search-menu').addClass('has-results');
        } else {
-         $('.search-menu.search-header').removeClass('has-results');
+         $('.search-menu').removeClass('has-results');
        }
        if (formFactor === 'menu' || showHeaderResults) {
          return contents;
@@ -185,7 +187,7 @@
   api.registerConnectorClass("below-site-header", "search-banner", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/?preview_theme_id=4942" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+        if (url === "/" || url === "/?preview_theme_id=4988" || url === "/categories"  || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988"){ 
           component.set("displaySearchBanner", true); 
         } else {  
           component.set("displaySearchBanner", false); 
@@ -217,15 +219,15 @@
   const navigationComponent = require('discourse/components/d-navigation').default;
   navigationComponent.reopen({
     isHomepage: function() {
-      return (window.location.pathname === "/" || window.location.pathname === "/?preview_theme_id=4942" || window.location.pathname === "/categories" || window.location.pathname === "/categories?preview_theme_id=4942" || window.location.pathname === "/latest" || window.location.pathname === "/latest?preview_theme_id=4942")
+      return (window.location.pathname === "/" || window.location.pathname === "/?preview_theme_id=4988" || window.location.pathname === "/categories" || window.location.pathname === "/categories?preview_theme_id=4988" || window.location.pathname === "/latest" || window.location.pathname === "/latest?preview_theme_id=4988")
     }.property()
   });
   api.onPageChange((url, title) => {
-    if (url === "/" || url === "/?preview_theme_id=4942"){
+    if (url === "/" || url === "/?preview_theme_id=4988"){
       $(".navigation #navigation-bar li a[href='/latest']").addClass("active");
       $(".navigation #navigation-bar li:nth-child(2)").addClass("active");
     }
-    if (url === "/categories" || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942") {
+    if (url === "/categories" || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988") {
       $(".navigation #navigation-bar li a").each(function(index, obj) {
         $(obj).removeClass("active");
         $(obj).parent().removeClass("active");
@@ -424,7 +426,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-cta-banner", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988"){ 
           component.set("displayCtaBanner", true); 
         } else {  
           component.set("displayCtaBanner", false); 
@@ -451,7 +453,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-category-topics", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988"){ 
           component.set("displayCategoryTopics", true); 
         } else {  
           component.set("displayCategoryTopics", false); 
@@ -467,7 +469,7 @@
   api.registerConnectorClass('above-footer', 'hp-above-footer-category-topics', {
     setupComponent(args, component) {
       api.onPageChange((url, title) => {
-        if ((url == "/") || (url == "/latest") || url === "/latest?preview_theme_id=4942" || url === "/?preview_theme_id=4942" || (url == "/categories") || url === "/categories?preview_theme_id=4942"){
+        if ((url == "/") || (url == "/latest") || url === "/latest?preview_theme_id=4988" || url === "/?preview_theme_id=4988" || (url == "/categories") || url === "/categories?preview_theme_id=4988"){
           component.set('displayCategoryTopics', true);
           component.set("loadingTopics", true);
           component.set("categoryTitle", settings.category_topics);
@@ -536,7 +538,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-external-cats", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4942" || url === "/latest" || url === "/latest?preview_theme_id=4942"){ 
+        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=4988" || url === "/latest" || url === "/latest?preview_theme_id=4988"){ 
           component.set("displayExternalCats", true); 
         } else {  
           component.set("displayExternalCats", false); 
