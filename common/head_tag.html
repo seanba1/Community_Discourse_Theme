@@ -72,7 +72,9 @@
       return helper.h('li.get-started-button-wrapper', [
           helper.h('a.get-started-button', {
               title: 'Get Started',
-              text: 'Get Started >'
+              text: 'Get Started >',
+              href: 'https://auth.monday.com/users/sign_up_new',
+              target: '_blank'
           }),
       ]);
   });
@@ -366,35 +368,6 @@
   {{/each}}
   </div>
 </script>
-<script type="text/x-handlebars" data-template-name="discovery/categories">
-
-  <div class="custom-categories-boxes-container">
-    {{#each model.categories as |c|}}
-    {{#unless c.isMuted}}
-      <div class="category-box-container">
-        <div class="category-image-container">
-          <a class="category-box-link" href={{c.url}}>
-            {{cdn-img src=c.uploaded_logo.url class="category-box-image"}}
-            <div class="image-bg-container">
-            </div>
-          </a>
-        </div>
-        <div class="category-title-container">
-          <h3 class="category-title">{{c.name}}</h3>
-        </div>
-        <div class="category-description-container">
-          <p class="category-description">{{html-safe c.description_excerpt}}</p>
-        </div>
-        <a class="category-box-link" href={{c.url}}>
-          <span>
-            {{c.name}} >
-          </span>
-        </a>
-      </div>
-    {{/unless}}
-  {{/each}}
-  </div>
-</script>
 
 <!-- topics -->
 <script type="text/x-handlebars" data-template-name="discovery/topics">
@@ -581,8 +554,9 @@
   {{/if}}
 </script>
 
-<!-- <script type="text/x-handlebars" data-template-name="navigation/category">
-  <div class="custom-category-container wrap">
+<script type="text/x-handlebars" data-template-name="navigation/category">
+  {{add-category-tag-classes category=category tagName=""}}
+  <section class="category-heading">
     <div class="category-header-container">
       <div class="category-image-container">
         {{cdn-img
@@ -593,7 +567,7 @@
       </div>
       <div class="category-info-container">
         <div class="category-title">
-          <h3>{{category.name}}</h3>
+          <span>{{category.name}}</span>
         </div>
         {{#if category.description}}
         <div class="category-description">
@@ -602,47 +576,31 @@
         {{/if}}
       </div>
     </div>
-    <div class="filter-container">
-    </div>
-  </div>
-</script> -->
-
-<script type="text/x-handlebars" data-template-name="navigation/category">
-  {{add-category-tag-classes category=category tagName=""}}
-  <section class="category-heading">
-    <div class="category-header-container">
-      <div class="category-image-container">
-        {{cdn-img
-          src=category.uploaded_logo.url
-          class="category-image"
-        }}
-        <!-- <div class="category-image-bg">bg</div> -->
-      </div>
-      <div class="category-info-container">
-        <div class="category-title">
-          <h3>{{category.name}}</h3>
-        </div>
-        {{#if category.description}}
-        <div class="category-description">
-          <p>{{category.description}}</p>
-        </div>
-        {{/if}}
-      </div>
-    </div>
+    {{#d-section class="navigation-container category-navigation"}}
+      {{d-navigation
+        category=category
+        filterMode=filterMode
+        noSubcategories=noSubcategories
+        canCreateTopic=canCreateTopic
+        createTopic=(route-action "createTopic")
+        createTopicDisabled=cannotCreateTopicOnCategory
+        hasDraft=currentUser.has_topic_draft
+        editCategory=(route-action "editCategory" category)}}
+      {{/d-section}}
   </section>
-{{#d-section class="navigation-container category-navigation"}}
-  {{d-navigation
-    category=category
-    filterMode=filterMode
-    noSubcategories=noSubcategories
-    canCreateTopic=canCreateTopic
-    createTopic=(route-action "createTopic")
-    createTopicDisabled=cannotCreateTopicOnCategory
-    hasDraft=currentUser.has_topic_draft
-    editCategory=(route-action "editCategory" category)}}
-{{/d-section}}
 </script>
-<!-- 
+
+<script type="text/discourse-plugin" version="0.8">
+  api.onPageChange((url, title) => {
+    if (url.startsWith("/c/")){
+      var top = $('.category-title span').position().top - 3;
+      var left = $('.category-title span').position().left + $('.category-title span').width();
+      $('.category-notifications-button').css('top',top + 'px');
+      $('.category-notifications-button').css('left',left + 'px');
+    } 
+  });
+</script>
+
 <script type="text/x-handlebars" data-template-name="components/bread-crumbs">
   {{#each categoryBreadcrumbs as |breadcrumb|}}
     {{#if breadcrumb.hasOptions}}
@@ -680,32 +638,47 @@
 </script>
 
 <script type="text/x-handlebars" data-template-name="components/navigation-bar">
-  <div class="select">
-    <div class="dropdown-button">
-      sort by
-    </div>
-    <div class="selected">
-    </div>
-    <div class="select-list">
-      {{#each navItems as |navItem|}}
-        {{navigation-item content=navItem filterMode=filterMode category=category}}
-      {{/each}}
-    </div>
+  <div class="custom-sort-by-select">
+    <li class="select-kit combo-box sort-by-drop">
+      <div class="select-kit-header single-select-header combo-box-header sort-by-drop-header">
+        <span>sort by</span>
+        <svg class="fa d-icon d-icon-caret-right svg-icon caret-icon svg-string" xmlns="http://www.w3.org/2000/svg"><use xlink:href="#caret-right"></use></svg>
+        <svg class="fa d-icon d-icon-caret-down svg-icon caret-icon svg-string" xmlns="http://www.w3.org/2000/svg"><use xlink:href="#caret-down"></use></svg>
+      </div>
+      <div class="select-list">
+        <ul class="select-kit-collection">
+          {{#each navItems as |navItem|}}
+            {{navigation-item content=navItem filterMode=filterMode category=category}}
+          {{/each}}
+        </ul>
+      </div>
+    </li>
   </div>
   <div class="custom-search-bar wrap">
     {{mount-widget widget="search-widget"}}
   </div>
 </script>
 
+<script type="text/discourse-plugin" version="0.8">
+  api.onPageChange((url, title) => {
+    $('.custom-sort-by-select .select-kit.sort-by-drop').on('click',function(){
+      $(this).toggleClass('is-expanded');
+    });
+    $(document).mouseup(e => {
+      if (!$('.custom-sort-by-select .select-kit.sort-by-drop').is(e.target) // if the target of the click isn't the container...
+      && $('.custom-sort-by-select .select-kit.sort-by-drop').has(e.target).length === 0) // ... nor a descendant of the container
+      {
+        $('.custom-sort-by-select .select-kit.sort-by-drop').removeClass('is-expanded');
+     }
+    });
+  });
+</script>
+
 <script type="text/x-handlebars" data-template-name="components/navigation-item">
-  {{#if activeClass}}
-    <div>selected:</div>
-  {{/if}}
   <a href={{hrefLink}} class={{activeClass}}>
     {{#if hasIcon}}
       <span class={{content.name}}></span>
     {{/if}}
     {{content.displayName}}
   </a>
-</script> -->
-
+</script>
