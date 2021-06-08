@@ -151,7 +151,7 @@
            className: 'search-icon',
            action: 'showResults'
        }));
-     }
+      }
       contents = contents.concat(...corePanelContents.call(this));
       let results = contents.find(w => w.name == 'search-menu-results');
        if (results && results.attrs.results) {
@@ -184,7 +184,7 @@
   });
 </script>
 
-<!-- search page settings -->
+<!-- search settings -->
 <script type="text/discourse-plugin" version="0.8">
   api.registerConnectorClass("below-site-header", "search-banner", {
     setupComponent(args, component) {
@@ -371,27 +371,55 @@
 
 <!-- topics -->
 <script type="text/x-handlebars" data-template-name="discovery/topics">
-  <div class="topics-container">
-    {{#each model.topics as |topic|}}
-    <div class="topic-container">
-      <div class="topic-image">
-        {{raw "list/posters-column" posters=topic.featuredUsers}}
-      </div>
-      <div class="topic-info">
-        {{~topic-link topic class="raw-link raw-topic-link"}}
-      </div>
-      <div class="topic-category">
-        {{category-link topic.category}}
-      </div>
-      <div class="topic-activity">
-        {{raw "list/activity-column" topic=topic class="num" tagName="td"}}
-      </div>
-      <div class="topic-reviews">
-        {{raw "list/posts-count-column" topic=topic}}
-      </div>
+  {{#discovery-topics-list
+  model=model
+  refresh=(action "refresh")
+  incomingCount=topicTrackingState.incomingCount
+  autoAddTopicsToBulkSelect=autoAddTopicsToBulkSelect
+  bulkSelectEnabled=bulkSelectEnabled
+  addTopicsToBulkSelect=(action "addTopicsToBulkSelect")
+  as |discoveryTopicList|}}
+  {{#if top}}
+    <div class="top-lists">
+      {{period-chooser period=period action=(action "changePeriod") fullDay=false}}
     </div>
-  {{/each}}
-  </div>
+  {{else}}
+    {{#if topicTrackingState.hasIncoming}}
+      <div class="show-more {{if hasTopics "has-topics"}}">
+        <a tabindex="0" href {{action "showInserted"}} class="alert alert-info clickable">
+          {{count-i18n key="topic_count_" suffix=topicTrackingState.filter count=topicTrackingState.incomingCount}}
+        </a>
+      </div>
+    {{/if}}
+  {{/if}}
+  {{plugin-outlet name="before-topic-list" args=(hash category=category)}}
+
+  {{#if hasTopics}}
+    {{topic-list
+      highlightLastVisited=true
+      top=top
+      showTopicPostBadges=showTopicPostBadges
+      showPosters=true
+      canBulkSelect=canBulkSelect
+      changeSort=(route-action "changeSort")
+      toggleBulkSelect=(action "toggleBulkSelect")
+      updateAutoAddTopicsToBulkSelect=(action "updateAutoAddTopicsToBulkSelect")
+      hideCategory=model.hideCategory
+      order=order
+      ascending=ascending
+      bulkSelectEnabled=bulkSelectEnabled
+      selected=selected
+      expandGloballyPinned=expandGloballyPinned
+      expandAllPinned=expandAllPinned
+      category=category
+      topics=model.topics
+      discoveryList=true
+      scrollOnLoad=true
+      onScroll=discoveryTopicList.saveScrollPosition}}
+  {{/if}}
+
+  {{plugin-outlet name="after-topic-list" args=(hash category=category)}}
+{{/discovery-topics-list}}
 </script>
 
 <!-- hp above footer cta banner page settings -->
@@ -559,11 +587,8 @@
   <section class="category-heading">
     <div class="category-header-container">
       <div class="category-image-container">
-        {{cdn-img
-          src=category.uploaded_logo.url
-          class="category-image"
-        }}
-        <div class="category-image-bg">bg</div>
+        {{cdn-img src=category.uploaded_logo.url class="category-image"}}
+        <div class="category-image-bg"></div>
       </div>
       <div class="category-info-container">
         <div class="category-title">
@@ -597,6 +622,20 @@
       var left = $('.category-title span').position().left + $('.category-title span').width();
       $('.category-notifications-button').css('top',top + 'px');
       $('.category-notifications-button').css('left',left + 'px');
+    } 
+    if (url.includes("/c/")){
+      $('.custom-sort-by-select .select-kit.sort-by-drop').on('click',function(){
+        $(this).toggleClass('is-expanded');
+      });
+      $(document).mouseup(e => {
+        if (!$('.custom-sort-by-select .select-kit.sort-by-drop').is(e.target) // if the target of the click isn't the container...
+        && $('.custom-sort-by-select .select-kit.sort-by-drop').has(e.target).length === 0) // ... nor a descendant of the container
+        {
+          $('.custom-sort-by-select .select-kit.sort-by-drop').removeClass('is-expanded');
+       }
+      });
+
+      $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "search topics, posts, users");
     } 
   });
 </script>
@@ -657,21 +696,6 @@
   <div class="custom-search-bar wrap">
     {{mount-widget widget="search-widget"}}
   </div>
-</script>
-
-<script type="text/discourse-plugin" version="0.8">
-  api.onPageChange((url, title) => {
-    $('.custom-sort-by-select .select-kit.sort-by-drop').on('click',function(){
-      $(this).toggleClass('is-expanded');
-    });
-    $(document).mouseup(e => {
-      if (!$('.custom-sort-by-select .select-kit.sort-by-drop').is(e.target) // if the target of the click isn't the container...
-      && $('.custom-sort-by-select .select-kit.sort-by-drop').has(e.target).length === 0) // ... nor a descendant of the container
-      {
-        $('.custom-sort-by-select .select-kit.sort-by-drop').removeClass('is-expanded');
-     }
-    });
-  });
 </script>
 
 <script type="text/x-handlebars" data-template-name="components/navigation-item">
