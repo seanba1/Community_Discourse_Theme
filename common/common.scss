@@ -647,13 +647,13 @@
                 }
               }
             }
-          }
-          &.has-excerpt.pinned {
-            .main-link{
-              flex-direction: column;
-            }
-            .topic-excerpt{
-              font-size: 16px;
+            &.has-excerpt.pinned {
+              .main-link{
+                flex-direction: column;
+              }
+              .topic-excerpt{
+                font-size: 16px;
+              }
             }
           }
         }
@@ -758,8 +758,8 @@
             .topic-image {
               a {
                 img {
-                  width: 50px;
-                  height: 50px;
+                  width: 30px;
+                  height: 30px;
                 }
               }
             }
@@ -1210,6 +1210,14 @@
               .post-activity {
                 span.relative-date {
                 }
+              }
+            }
+            &.has-excerpt.pinned {
+              .main-link{
+                flex-direction: column;
+              }
+              .topic-excerpt{
+                font-size: 16px;
               }
             }
           }
