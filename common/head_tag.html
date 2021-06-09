@@ -2,6 +2,8 @@
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38") {
+      $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
+
       if (url === "/categories" || url === "/categories?preview_theme_id=38"){
         $(".categories-show-button-wrapper").css("display","block");
         if ($(".category-box-container").length > 6){
@@ -124,6 +126,7 @@
       const formFactor = this.state.formFactor;
       if (formFactor === 'widget') {
         $('.search-input').addClass('has-results');
+        $('.show-help').text('Advanced')
         this.showResults();
       }
     },
@@ -226,8 +229,8 @@
   });
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=38"){
-      $(".navigation #navigation-bar li a[href='/latest']").addClass("active");
-      $(".navigation #navigation-bar li:nth-child(2)").addClass("active");
+      $(".navigation #navigation-bar li a[href='/categories']").addClass("active");
+      $(".navigation #navigation-bar li:nth-child(1)").addClass("active");
     }
     if (url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38") {
       $(".navigation #navigation-bar li a").each(function(index, obj) {
@@ -611,7 +614,7 @@
        }
       });
 
-      $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "search topics, posts, users");
+      $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users");
     } 
   });
 </script>
