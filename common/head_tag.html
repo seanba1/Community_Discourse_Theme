@@ -371,30 +371,8 @@
 
 <!-- topics -->
 <script type="text/x-handlebars" data-template-name="discovery/topics">
-  {{#discovery-topics-list
-  model=model
-  refresh=(action "refresh")
-  incomingCount=topicTrackingState.incomingCount
-  autoAddTopicsToBulkSelect=autoAddTopicsToBulkSelect
-  bulkSelectEnabled=bulkSelectEnabled
-  addTopicsToBulkSelect=(action "addTopicsToBulkSelect")
-  as |discoveryTopicList|}}
-  {{#if top}}
-    <div class="top-lists">
-      {{period-chooser period=period action=(action "changePeriod") fullDay=false}}
-    </div>
-  {{else}}
-    {{#if topicTrackingState.hasIncoming}}
-      <div class="show-more {{if hasTopics "has-topics"}}">
-        <a tabindex="0" href {{action "showInserted"}} class="alert alert-info clickable">
-          {{count-i18n key="topic_count_" suffix=topicTrackingState.filter count=topicTrackingState.incomingCount}}
-        </a>
-      </div>
-    {{/if}}
-  {{/if}}
-  {{plugin-outlet name="before-topic-list" args=(hash category=category)}}
-
   {{#if hasTopics}}
+  <div class="topics-container">
     {{topic-list
       highlightLastVisited=true
       top=top
@@ -416,10 +394,8 @@
       discoveryList=true
       scrollOnLoad=true
       onScroll=discoveryTopicList.saveScrollPosition}}
+  </div>
   {{/if}}
-
-  {{plugin-outlet name="after-topic-list" args=(hash category=category)}}
-{{/discovery-topics-list}}
 </script>
 
 <!-- hp above footer cta banner page settings -->

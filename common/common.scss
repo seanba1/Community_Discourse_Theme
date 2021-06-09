@@ -444,84 +444,189 @@
   }
 
   /* topics */
-  .topics-container {
-    overflow: hidden;
-    .topic-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 2px solid #e6e9ef;
-      .topic-image {
-        a {
+  // .topics-container {
+  //   overflow: hidden;
+  //   .topic-container {
+  //     display: flex;
+  //     flex-direction: row;
+  //     align-items: center;
+  //     padding: 15px 0;
+  //     border-bottom: 2px solid #e6e9ef;
+  //     .topic-image {
+  //       a {
+  //         display: none;
+  //         &:first-child {
+  //           display: block;
+  //           margin-right: 25px;
+  //           img {
+  //             width: 50px;
+  //             height: 50px;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     .topic-info {
+  //       margin-right: auto;
+  //       a {
+  //         font-size: 20px;
+  //         line-height: 40px;
+  //         letter-spacing: -0.3px;
+  //         color: #383b45;
+  //       }
+  //     }
+  //     .topic-category {
+  //       min-width: 185px;
+  //       text-align: left;
+  //       a {
+  //         span {
+  //           display: none;
+  //         }
+  //         span.badge-category {
+  //           display: block;
+  //           font-size: 18px;
+  //           line-height: 40px;
+  //           letter-spacing: -0.3px;
+  //           color: #0073ea;
+  //           span.category-name {
+  //             display: block;
+  //             color: #0073ea;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     .topic-activity {
+  //       min-width: 65px;
+  //       text-align: left;
+  //       margin-left: 10px;
+  //       .post-activity {
+  //         span.relative-date {
+  //           font-size: 18px;
+  //           line-height: 40px;
+  //           letter-spacing: -0.3px;
+  //           color: #676879;
+  //         }
+  //       }
+  //     }
+  //     .topic-reviews {
+  //       margin-left: 30px;
+  //       button.badge-posts {
+  //         background-image: url($bubble_bg);
+  //         background-repeat: no-repeat;
+  //         background-position: center center;
+  //         background-size: contain;
+  //         width: 30px;
+  //         height: 25px;
+  //         display: flex;
+  //         align-items: center;
+  //         justify-content: center;
+  //         span.number {
+  //           font-size: 16px;
+  //           color: #676879;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  .navigation-topics{
+    .topics-container {
+      overflow: hidden;
+      .topic-list{
+        thead{
           display: none;
-          &:first-child {
-            display: block;
-            margin-right: 25px;
-            img {
-              width: 50px;
-              height: 50px;
+        }
+        tbody{
+          border-top: none;
+          .topic-list-item{
+            display: flex;
+            padding: 15px 0;
+            .main-link{
+              order: 2;
+              display: flex;
+              width: 100%;
+              a {
+                font-size: 20px;
+                line-height: 40px;
+                letter-spacing: -0.3px;
+                color: #383b45;
+              }
+              .link-top-line{
+                .topic-post-badges{
+                  display: none;
+                }
+              }
+              .link-bottom-line{
+                margin-left: auto;
+                margin-right: 50px;
+                a{
+                  .badge-category-parent-bg{
+                    display: none;
+                  }
+                  .badge-category-bg{
+                    display: none;
+                  }
+                  .category-name{
+                    font-size: 18px;
+                    line-height: 40px;
+                    letter-spacing: -0.3px;
+                    color: #0073EA;
+                  }
+                }
+                .discourse-tags{
+                  display: none;
+                }
+              }
             }
-          }
-        }
-      }
-      .topic-info {
-        margin-right: auto;
-        a {
-          font-size: 20px;
-          line-height: 40px;
-          letter-spacing: -0.3px;
-          color: #383b45;
-        }
-      }
-      .topic-category {
-        min-width: 185px;
-        text-align: left;
-        a {
-          span {
-            display: none;
-          }
-          span.badge-category {
-            display: block;
-            font-size: 18px;
-            line-height: 40px;
-            letter-spacing: -0.3px;
-            color: #0073ea;
-            span.category-name {
-              display: block;
-              color: #0073ea;
+            .posters{
+              order: 1;
+              width: 60px;
+              a {
+                display: none;
+                &:first-child {
+                  display: block;
+                  margin-right: 25px;
+                  img {
+                    width: 50px;
+                    height: 50px;
+                  }
+                }
+              }
             }
-          }
-        }
-      }
-      .topic-activity {
-        min-width: 65px;
-        text-align: left;
-        margin-left: 10px;
-        .post-activity {
-          span.relative-date {
-            font-size: 18px;
-            line-height: 40px;
-            letter-spacing: -0.3px;
-            color: #676879;
-          }
-        }
-      }
-      .topic-reviews {
-        margin-left: 30px;
-        button.badge-posts {
-          background-image: url($bubble_bg);
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-size: contain;
-          width: 30px;
-          height: 25px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          span.number {
-            font-size: 16px;
-            color: #676879;
+            .posts-map.posts{
+              order: 4;
+              button.badge-posts {
+                background-image: url($bubble_bg);
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: contain;
+                width: 30px;
+                height: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                span.number {
+                  font-size: 16px;
+                  color: #676879;
+                }
+              }
+            }
+            .views{
+              display: none;
+            }
+            .activity{
+              order: 3;
+              min-width: 65px;
+              text-align: left;
+              margin-left: auto;
+              margin-right: 30px;
+              .post-activity {
+                span.relative-date {
+                  font-size: 18px;
+                  line-height: 40px;
+                  letter-spacing: -0.3px;
+                  color: #676879;
+                }
+              }
+            }
           }
         }
       }
@@ -565,7 +670,7 @@
     margin-bottom: 50px;
     .custom-category-topics-container {
       .custom-category-topics-title {
-        font-size: 27.83px;
+        font-size: 28px;
         line-height: 33px;
         letter-spacing: -0.1px;
         color: #676879;
@@ -998,6 +1103,74 @@
       }
     }
   }
+  body.category{
+    .topics-container{
+      .topic-list{
+        thead{
+          th{
+            font-size: 16px;
+            line-height: 18px;
+            color: #666972;
+          }
+        }
+        tbody{
+          .topic-list-item{
+            .main-link{
+              width: 55%;
+              .link-top-line{
+                .topic-statuses{
+                  height: 100%;
+                  padding-top: 7px;
+                  svg{
+                    height: 15px;
+                    width: 15px;
+                  }
+                }
+                a{
+                  font-size: 20px;
+                  line-height: 40px;
+                  letter-spacing: -0.3px;
+                  color: #383B45;
+                  padding-bottom: 5px;
+                }
+              }
+              .link-bottom-line{
+                a{
+                  font-family: RobotoLight;
+                  font-size: 16px;
+                  line-height: 26px;
+                  letter-spacing: -0.2px;
+                }
+              }
+            }
+            .posters{
+              a {
+                img {
+                  width: 30px;
+                  height: 30px;
+                }
+              }
+            }
+            .posts-map.posts{
+              button.badge-posts {
+                span.number {
+                }
+              }
+            }
+            .views{
+            }
+            .activity{
+              .post-activity {
+                span.relative-date {
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
 
   /* tag page */
   .tag-navigation{
