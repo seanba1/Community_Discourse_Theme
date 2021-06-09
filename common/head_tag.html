@@ -3,8 +3,7 @@
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38") {
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
-
-      if (url === "/categories" || url === "/categories?preview_theme_id=38"){
+      if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=38"){
         $(".categories-show-button-wrapper").css("display","block");
         if ($(".category-box-container").length > 6){
           let height = ($(".category-box-container").outerHeight() * 2) + (parseInt($('.category-box-container').css('margin-bottom')) * 2) - 10;
@@ -406,7 +405,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-cta-banner", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
+        if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories"  || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
           component.set("displayCtaBanner", true); 
         } else {  
           component.set("displayCtaBanner", false); 
@@ -433,7 +432,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-category-topics", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
+        if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
           component.set("displayCategoryTopics", true); 
         } else {  
           component.set("displayCategoryTopics", false); 
@@ -518,7 +517,7 @@
   api.registerConnectorClass("above-footer", "hp-above-footer-external-cats", {
     setupComponent(args, component) {
       api.onPageChange((url) => {
-        if (url === "/" || url === "/categories"  || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
+        if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories"  || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38"){ 
           component.set("displayExternalCats", true); 
         } else {  
           component.set("displayExternalCats", false); 

@@ -249,10 +249,18 @@
         border-radius: 24px;
         padding: 2em 1em 1em 1em;
         border: 2px solid #0073ea;
+        .badge-category-parent-bg{
+          display: block;
+          border-radius: 50%;
+          position: static !important;
+          width: 7px;
+          height: 7px;
+          margin-right: 1px;
+        }
         .badge-category-bg{
           display: block;
           border-radius: 50%;
-          position: static;
+          position: static !important;
           width: 7px;
           height: 7px;
           margin-right: 3px;
@@ -1071,6 +1079,14 @@
                 max-width: 150%;
                 padding: 2em 0.5em 0.5em 0.5em;
                 border: 1px solid #C5C7D0;
+                .badge-category-parent-bg{
+                  display: block;
+                  border-radius: 50%;
+                  position: static;
+                  width: 7px;
+                  height: 7px;
+                  margin-right: 1px;
+                }
                 .badge-category-bg{
                   display: block;
                   border-radius: 50%;
@@ -1180,6 +1196,14 @@
           }
         }
       }
+    }
+    .badge-category-parent-bg{
+      display: block;
+      border-radius: 50%;
+      position: static !important;
+      width: 7px;
+      height: 7px;
+      margin-right: 1px;
     }
     .badge-category-bg{
       display: block;
@@ -1375,6 +1399,14 @@
               max-width: 150%;
               padding: 2em 0.5em 0.5em 0.5em;
               border: 1px solid #C5C7D0;
+              .badge-category-parent-bg{
+                display: block;
+                border-radius: 50%;
+                position: static;
+                width: 7px;
+                height: 7px;
+                margin-right: 1px;
+              }
               .badge-category-bg{
                 display: block;
                 border-radius: 50%;
@@ -1416,7 +1448,15 @@
     }
   }
   .tags-page{
-    span.badge-category-bg,span.badge-category-parent-bg {
+    span.badge-category-parent-bg {
+      border-radius: 50%;
+      display: block;
+      position: static !important;
+      height: 7px;
+      width: 7px !important;
+      margin-right: 1px;
+    }
+    span.badge-category-bg {
       border-radius: 50%;
       display: block;
       position: static !important;
