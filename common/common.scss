@@ -1133,6 +1133,9 @@
                   color: #383B45;
                   padding-bottom: 5px;
                 }
+                .topic-post-badges{
+                  display: none;
+                }
               }
               .link-bottom-line{
                 a{
@@ -1168,6 +1171,14 @@
           }
         }
       }
+    }
+    .badge-category-bg{
+      display: block;
+      border-radius: 50%;
+      position: static !important;
+      width: 7px;
+      height: 7px;
+      margin-right: 3px;
     }
   }
 
@@ -1393,6 +1404,19 @@
           box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
         }
       }
+    }
+  }
+  .tags-page{
+    span.badge-category-bg,span.badge-category-parent-bg {
+      border-radius: 50%;
+      display: block;
+      position: static !important;
+      height: 7px;
+      width: 7px !important;
+      margin-right: 5px;
+    }
+    span.category-name {
+      color: #666972;
     }
   }
 
