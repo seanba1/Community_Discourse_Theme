@@ -1,4 +1,7 @@
 @media (min-width: 768px){
+  body{
+    background: none !important;
+  }
   @import "common/foundation/mixins";
 
   @font-face {
