@@ -1,7 +1,7 @@
 <!-- general page settings -->
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
-    if (url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38") {
+    if (url === "/" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=38") {
       if (url === "/categories" || url === "/categories?preview_theme_id=38"){
         $(".categories-show-button-wrapper").css("display","block");
         if ($(".category-box-container").length > 6){

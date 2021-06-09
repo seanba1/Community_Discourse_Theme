@@ -1,0 +1,269 @@
+<script>
+    window.BigBrainQ = window.BigBrainQ || [];
+    window.BigBrain = window.BigBrain || function(){
+      args = Array.prototype.slice.call(arguments)
+      if(args[0] == 'track'){
+        event_props = {}
+        if(args.length == 3)
+          event_props = args[2];
+        event_props['timestamp'] = parseInt(new Date().getTime()/1000);
+        if(args.length == 2) args.push(event_props);
+        else args[2] = event_props;
+      }
+      window.BigBrainQ.push(args);
+      console.log(args[1]);
+    };
+    (function(d,u,callback){
+      if (window.BigBrainInit) return;
+      window.BigBrainInit = true
+      var s = d.createElement('script');
+      s.type = 'text/javascript'
+      s.src = u;
+      s.async = true;
+      s.onreadystatechange = s.onload = function(){
+        var st = s.readyState;
+        if (!callback.done && (!st || /loaded|complete/.test(st))) {
+          callback.done = true;
+          callback();
+        }
+      };
+      (d.body || head).appendChild(s);
+    })(document, "https://d18vk66ftlazd2.cloudfront.net/bigbrain-1.0.min.js", function(){
+      var init = { bigbrain_url:  "https://track.bigbrain.me/prod", sync_interval: 10000, source: "community" };
+      window.BigBrain = new BigBrainTracker(init);
+    });
+
+
+  var host = window.location.origin;
+
+  var oldURL = "";
+  var currentURL = window.location.href;
+  function checkURLchange(currentURL){
+      var lastpart1 = currentURL.split('/');
+      var lastpart2 = oldURL.split('/');
+      if(currentURL != oldURL){
+          if(window.location.pathname.indexOf('/t/') == 0  && lastpart1[4] != lastpart2[4]) {
+              $(document).ready(function(){
+                  var dataPreloaded = $('#data-preloaded').data('preloaded');
+                  if(dataPreloaded.currentUser){
+                      var currentUser = JSON.parse(dataPreloaded.currentUser);
+
+                      var userEmail = null;
+                      Discourse.User.findByUsername(currentUser.username).then(function(e){
+                          userEmail = e.email;
+                          
+                          var replyId = null; 
+                          var topicId = $('h1').data('topicId');
+                          if(!topicId){
+                              topicId = $('h1 a').data('topicId');
+                          }
+
+                          var topicData = null;
+                          $.ajax({
+                              type: 'GET',
+                              url: host+'/t/'+topicId+'.json',
+                              dataType: 'json',
+                              success: function (data) {
+                                  topicData = data;
+  
+                                  var categoryName = Discourse.Category.findById(topicData.category_id).name;
+                                  
+                                  $('.toggle-like').on('click', function(){
+                                      if(!$(this).hasClass('has-like')){
+                                          replyId = $(this).parents('.topic-post').find('article').data('postId');
+                                              
+                                          var topicLike = {
+                                              kind: categoryName, 
+                                              direct_object_id: topicData.id, 
+                                              direct_object: topicData.title,
+                                              info2: topicData.category_id, 
+                                              info3: replyId
+                                          };
+                                          BigBrain('track', 'community_like_topic', topicLike);
+                                      }
+                                  })
+                                          
+                                  $('#reply-control').on('click', '.create', function(){
+                                      if($(this).attr('aria-label') == "Reply"){
+                                          var replies = null;
+                                          var newReplyId = null;
+                                          setTimeout(function(){
+                                              replies = $('.topic-post').find('article');
+                                              newReplyId = replies[replies.length-1].dataset.postId;
+                                                      
+                                              var topicReply = {
+                                                  kind: categoryName, 
+                                                  direct_object_id: topicData.id, 
+                                                  direct_object: topicData.title,
+                                                  info2: topicData.category_id, 
+                                                  info3: newReplyId
+                                              };    
+                              
+                                              BigBrain('track', 'community_reply_topic', topicReply);
+                                                  
+                                          }, 3000);
+                                      }
+                                  })
+                                          
+                                  var topicVisit = {
+                                      kind: categoryName, 
+                                      direct_object_id: topicData.id, 
+                                      direct_object: topicData.title,
+                                      info2: topicData.category_id, 
+                                  };
+                                  BigBrain('track', 'community_visit_topic', topicVisit);
+                              }
+                          });
+                      });    
+                  }    
+              });
+          }
+      }
+      oldURL = window.location.href;
+  }
+
+  setInterval(function() {
+      checkURLchange(window.location.href);
+  }, 1000);
+  checkURLchange(window.location.href);
+  
+  $(document).ready(function(){
+      
+      if(window.location.pathname.indexOf('/t/') == 0) {
+          var dataPreloaded = $('#data-preloaded').data('preloaded');
+          if(dataPreloaded.currentUser){
+              var currentUser = JSON.parse(dataPreloaded.currentUser);
+
+              var userEmail = null;
+              Discourse.User.findByUsername(currentUser.username).then(function(e){
+                  userEmail = e.email;
+                      
+                  var replyId = null; 
+                  var topicId = $('h1').data('topicId');
+                  if(!topicId){
+                      topicId = $('h1 a').data('topicId');
+                  }
+
+                  var topicData = null;
+                  $.ajax({
+                      type: 'GET',
+                      url: host+'/t/'+topicId+'.json',
+                      dataType: 'json',
+                      success: function (data) {
+                          topicData = data;
+                          
+                          var categoryName = Discourse.Category.findById(topicData.category_id).name;
+                              
+                          $('.toggle-like').on('click', function(){
+                              if(!$(this).hasClass('has-like')){
+                                  replyId = $(this).parents('.topic-post').find('article').data('postId');
+                                      
+                                  var topicLike = {
+                                      kind: categoryName, 
+                                      direct_object_id: topicData.id, 
+                                      direct_object: topicData.title,
+                                      info2: topicData.category_id, 
+                                      info3: replyId
+                                  };
+                                  BigBrain('track', 'community_like_topic', topicLike);
+                              }
+                          })
+                                          
+                          $('#reply-control').on('click', '.create', function(){
+                              if($(this).attr('aria-label') == "Reply"){
+                                  var replies = null;
+                                  var newReplyId = null;
+                                  setTimeout(function(){
+                                      replies = $('.topic-post').find('article');
+                                      newReplyId = replies[replies.length-1].dataset.postId;
+                                                  
+                                      var topicReply = {
+                                          kind: categoryName, 
+                                          direct_object_id: topicData.id, 
+                                          direct_object: topicData.title,
+                                          info2: topicData.category_id, 
+                                          info3: newReplyId
+                                      };    
+                              
+                                      BigBrain('track', 'community_reply_topic', topicReply);
+                                              
+                                  }, 3000);
+                              }
+                          })
+                                          
+                          var topicVisit = {
+                              kind: categoryName, 
+                              direct_object_id: topicData.id, 
+                              direct_object: topicData.title,
+                              info2: topicData.category_id, 
+                          };
+                          BigBrain('track', 'community_visit_topic', topicVisit);
+                      }
+                  });
+              });    
+          }    
+      }
+      
+      if($('h1').hasClass('ring-first-notification')){
+          var currentUser = Discourse.User.current();
+          Discourse.User.findByUsername(currentUser.username).then(function(e){
+              if(!currentUser.read_first_notification){
+                  var registerEvent = {
+                      kind: e.username,
+                      direct_object_id: e.id, 
+                      direct_object: e.username                    };
+                  BigBrain('track', 'community_register', registerEvent);
+              }
+          });
+      }
+
+      var lastTopicId = null;
+      var newTopic = null;
+      $.ajax({
+          type: 'GET',
+          url: host+'/latest.json',
+          data: {order: 'created'},
+          dataType: 'json',
+          success: function (data) {
+              lastTopicId = data.topic_list.topics[0].id;
+          }
+      });
+              
+      $('#reply-control').on('click', '.create', function(){
+    
+          if($(this).attr('aria-label') == "Create Topic"){
+              setTimeout(function(){
+                  $.ajax({
+                      type: 'GET',
+                      url: host+'/latest.json',
+                      data: {order: 'created'},
+                      dataType: 'json',
+                      success: function (data) {
+                          newTopic = data.topic_list.topics[0];
+                          var categoryName = Discourse.Category.findById(newTopic.category_id).name;
+                          var currentUser = Discourse.User.current();
+                          var userEmail = null;
+                          Discourse.User.findByUsername(currentUser.username).then(function(e){
+                              userEmail = e.email;
+                              if(newTopic.id > lastTopicId){
+                                  var topicCreate = {
+                                      kind: categoryName, 
+                                      direct_object_id: newTopic.id, 
+                                      direct_object: newTopic.title, 
+                                      info2: newTopic.category_id
+                                  };
+                                  BigBrain('track', 'community_create_topic', topicCreate);
+                              }
+                          });
+                      }
+                  });
+              }, 3000);
+          }
+
+      })
+  });
+
+
+
+
+</script>
