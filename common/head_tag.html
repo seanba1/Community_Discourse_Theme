@@ -123,10 +123,10 @@
        }
      },
     click: function() {
+      $('.show-help').text('Advanced')
       const formFactor = this.state.formFactor;
       if (formFactor === 'widget') {
         $('.search-input').addClass('has-results');
-        $('.show-help').text('Advanced')
         this.showResults();
       }
     },

@@ -364,6 +364,12 @@
             height: 170px;
             border-radius: 4px;
             margin-bottom: 15px;
+            img{
+              width: 100%;
+              height: 100%;
+              object-position: center;
+              object-fit: contain;
+            }
             + .image-bg-container {
               display: none;
             }
@@ -814,14 +820,14 @@
         height: 150px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: left;
         .category-image {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 150px;
-          border-radius: 4px;
+          img{
+            width: 150px;
+            height: 100%;
+            object-position: center;
+            object-fit: contain;
+          }
           + .category-image-bg {
             display: none;
           }
