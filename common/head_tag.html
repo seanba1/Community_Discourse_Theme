@@ -8,6 +8,10 @@
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
     }
   });
+  $('.logo-big').on('click', function(e) {
+    e.preventDefault();
+    window.open('https://monday.com/', '_self');
+  });
   api.modifyClass("route:application", {
     actions: {
       willTransition() {
