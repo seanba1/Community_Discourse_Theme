@@ -8,12 +8,6 @@
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
     }
   });
-  $(document).ready(function() {
-    $('.logo-big').on('click', function(e) {
-      e.preventDefault();
-      window.open('https://monday.com/', '_self');
-    });
-  });
   api.modifyClass("route:application", {
     actions: {
       willTransition() {
@@ -289,31 +283,56 @@
 
 <!-- topics -->
 <script type="text/x-handlebars" data-template-name="discovery/topics">
-  {{#if hasTopics}}
   <div class="topics-container">
-    {{topic-list
-      highlightLastVisited=true
-      top=top
-      showTopicPostBadges=showTopicPostBadges
-      showPosters=true
-      canBulkSelect=canBulkSelect
-      changeSort=(route-action "changeSort")
-      toggleBulkSelect=(action "toggleBulkSelect")
-      updateAutoAddTopicsToBulkSelect=(action "updateAutoAddTopicsToBulkSelect")
-      hideCategory=model.hideCategory
-      order=order
-      ascending=ascending
+    {{#discovery-topics-list
+      model=model
+      refresh=(action "refresh")
+      incomingCount=topicTrackingState.incomingCount
+      autoAddTopicsToBulkSelect=autoAddTopicsToBulkSelect
       bulkSelectEnabled=bulkSelectEnabled
-      selected=selected
-      expandGloballyPinned=expandGloballyPinned
-      expandAllPinned=expandAllPinned
-      category=category
-      topics=model.topics
-      discoveryList=true
-      scrollOnLoad=true
-      onScroll=discoveryTopicList.saveScrollPosition}}
+      addTopicsToBulkSelect=(action "addTopicsToBulkSelect")
+      as |discoveryTopicList|}}
+      {{#if top}}
+        <div class="top-lists">
+          {{period-chooser period=period action=(action "changePeriod") fullDay=false}}
+        </div>
+      {{else}}
+        {{#if topicTrackingState.hasIncoming}}
+          <div class="show-more {{if hasTopics "has-topics"}}">
+            <a tabindex="0" href {{action "showInserted"}} class="alert alert-info clickable">
+              {{count-i18n key="topic_count_" suffix=topicTrackingState.filter count=topicTrackingState.incomingCount}}
+            </a>
+          </div>
+        {{/if}}
+      {{/if}}
+      {{plugin-outlet name="before-topic-list" args=(hash category=category)}}
+    
+      {{#if hasTopics}}
+        {{topic-list
+          highlightLastVisited=true
+          top=top
+          showTopicPostBadges=showTopicPostBadges
+          showPosters=true
+          canBulkSelect=canBulkSelect
+          changeSort=(route-action "changeSort")
+          toggleBulkSelect=(action "toggleBulkSelect")
+          updateAutoAddTopicsToBulkSelect=(action "updateAutoAddTopicsToBulkSelect")
+          hideCategory=model.hideCategory
+          order=order
+          ascending=ascending
+          bulkSelectEnabled=bulkSelectEnabled
+          selected=selected
+          expandGloballyPinned=expandGloballyPinned
+          expandAllPinned=expandAllPinned
+          category=category
+          topics=model.topics
+          discoveryList=true
+          scrollOnLoad=true
+          onScroll=discoveryTopicList.saveScrollPosition}}
+      {{/if}}
+      {{plugin-outlet name="after-topic-list" args=(hash category=category)}}
+    {{/discovery-topics-list}}
   </div>
-  {{/if}}
   <footer class="topic-list-bottom">
     {{conditional-loading-spinner condition=model.loadingMore}}
     {{#if allLoaded}}
@@ -433,6 +452,7 @@
     }
   });
 </script>
+
 <!-- hp above footer categories boxes template -->
 <script type="text/x-handlebars" data-template-name="/connectors/above-footer/hp-above-footer-categories-boxes">
   {{#if displayCategoriesBoxes}}
@@ -440,6 +460,14 @@
     <div class="custom-categories-boxes-container-title">
       Categories
     </div>
+    {{#if showCategoryAdmin}}
+      {{categories-admin-dropdown
+        onChange=(action "selectCategoryAdminDropdownAction")
+        options=(hash
+          triggerOnChangeOnTab=false
+        )
+      }}
+    {{/if}}
     <div class="custom-categories-boxes-container">
       {{#each categories as |c|}}
       <div class="category-box-container">
@@ -499,12 +527,6 @@
   {{/if}}
 </script>
 
-<script type='text/x-handlebars' data-template-name='/connectors/topic-above-post-stream/back-button'>
-  <div class="category-back-button">
-    <a><span>> </span>Back</a>
-  </div>
-</script>
-
 <script type="text/x-handlebars" data-template-name="navigation/category">
   {{add-category-tag-classes category=category tagName=""}}
   <section class="category-heading">
@@ -522,9 +544,6 @@
           <p>{{html-safe category.description}}</p>
         </div>
         {{/if}}
-        <div class="category-back-button">
-          <a><span>> </span>Back</a>
-        </div>
       </div>
     </div>
     {{#d-section class="navigation-container category-navigation"}}
@@ -562,12 +581,6 @@
       });
 
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users");
-    };
-    if (url.includes("/c/") || url.includes("/t/")){
-      $('.category-back-button a').on('click',function(e){
-        e.preventDefault();
-        window.history.back();
-      });
     };
   });
 </script>

@@ -35,6 +35,10 @@ h3,
   color: #000 !important;
   font-family: SofiaRegular;
 }
+#banner{
+  height: 100%;
+  max-height: 100%;
+}
 /* navlinks */
 .d-header {
   ul[role="navigation"] {
@@ -1445,6 +1449,12 @@ body.category{
 }
 
 @media (max-width: 768px){
+  .category-back-button{
+    margin-bottom: 10px;
+  }
+  #topic-title .title-wrapper h1{
+    margin-bottom: 5px;
+  }
   .discourse-tags{
     a.list-vote-count{
       font-size: 14px;
@@ -1454,6 +1464,12 @@ body.category{
         height: 75%;
       }
     }
+  }
+  .topic-list .main-link{
+    width: 87%;
+  }
+  body.category .topics-container .topic-list tbody .topic-list-item .main-link{
+    width: 87%;
   }
   .custom-search-banner {
     background: #fff;
@@ -1558,6 +1574,23 @@ body.category{
   .category-heading .category-header-container .category-info-container .category-back-button{
     margin-top: 5px;
     margin-bottom: 5px;
+  }
+  .category-heading .category-header-container{
+    display: block;
+  }
+  .category-heading .category-header-container .category-image-container{
+    width: 125px;
+    height: auto;
+  }
+  .category-heading .category-header-container .category-image-container .category-image img{
+    width: 125px;
+  }
+  .category-heading .category-header-container .category-info-container .category-title{
+    position: absolute;
+    top: 50px;
+    left: 125px;
+    max-width: calc(100% - 125px);
+    width: calc(100% - 125px);
   }
 }
 
@@ -1770,7 +1803,7 @@ body.category{
     .search-widget {
       width: 540px;
       margin: 0 auto;
-      padding: 20px 0 5px;
+      padding: 30px 0 5px;
       div.discourse-tags {
         font-size: $font-down-1;
       }
@@ -1797,7 +1830,7 @@ body.category{
           line-height: 20px;
           letter-spacing: -0.16px;
           color: #676879;
-          padding: 6px 18px;
+          padding: 8px 18px;
           &:focus {
             outline: none;
           }
@@ -2406,11 +2439,20 @@ body.category{
     width: 100vw;
     height: 100vh;
     max-width: 100vw;
+    display: flex;
+    justify-content: center;
     .grippie{
       display: none;
     }
     .composer-popup-container{
-      display: none;
+      display: block;
+      width: 45%;
+      height: 400px;
+      margin: auto;
+      position: absolute;
+      z-index: 10;
+      right: 5%;
+
     }
     .reply-area{
       height: 400px;
