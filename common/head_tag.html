@@ -3,7 +3,6 @@
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=4988" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=4988"){
       $('#navigation-bar .select-list a[href="/latest"]').click();
-      
     }
     if ((url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=4988" || url === "/latest?preview_theme_id=38" || url === "/new" || url === "/new?preview_theme_id=4988" || url === "/new?preview_theme_id=38")) {
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
@@ -381,6 +380,9 @@
         if (url === "/" || url === "/?preview_theme_id=4988" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=4988" || url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=4988" || url === "/latest?preview_theme_id=38" || url === "/new" || url === "/new?preview_theme_id=4988" || url === "/new?preview_theme_id=38"){ 
           component.set('displayCategoriesBoxes', true);
           component.set("loadingCategories", true);
+          let thisUser = Discourse.User.current(); 
+          let isAdmin = thisUser.admin  
+          component.set("isAdmin", isAdmin);
           ajax("/categories.json").then (function(result){
             let categories = [];
             result.category_list.categories.filter(category => category.notification_level != 0).forEach(function(category){
@@ -459,7 +461,7 @@
     <div class="custom-categories-boxes-container-title">
       Categories
     </div>
-    {{#if showCategoryAdmin}}
+    {{#if isAdmin}}
       {{categories-admin-dropdown
         onChange=(action "selectCategoryAdminDropdownAction")
         options=(hash
