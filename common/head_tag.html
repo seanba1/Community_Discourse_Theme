@@ -197,14 +197,6 @@
   <div class="container">
     <div class="navigation">
       {{navigation-bar navItems=navItems filterMode=filterMode category=category}}
-      {{#if showCategoryAdmin}}
-        {{categories-admin-dropdown
-          onChange=(action "selectCategoryAdminDropdownAction")
-          options=(hash
-            triggerOnChangeOnTab=false
-          )
-        }}
-      {{/if}}
       {{create-topic-button
         canCreateTopic=canCreateTopic
         action=(action "clickCreateTopicButton")
