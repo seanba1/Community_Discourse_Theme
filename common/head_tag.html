@@ -2,7 +2,11 @@
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=4988" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=4988"){
-      $('#navigation-bar .select-list a[href="/latest"]').click();
+      let thisUser = Discourse.User.current(); 
+      let isAdmin = thisUser.admin
+      if (!isAdmin){
+        $('#navigation-bar .select-list a[href="/latest"]').click();
+      }
     }
     if ((url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=4988" || url === "/latest?preview_theme_id=38" || url === "/new" || url === "/new?preview_theme_id=4988" || url === "/new?preview_theme_id=38")) {
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
@@ -392,7 +396,6 @@
             setTimeout(function(){
               if (window.innerWidth > 768){
                 if ($(".category-box-container").length > 6){
-                  console.log($(".category-box-container").length);
                   let height = ($(".category-box-container").outerHeight() * 2) + (parseInt($('.category-box-container').css('margin-bottom')) * 2) - 10;
                   let $categoriesContainer = $(".custom-categories-boxes-container");
                   $categoriesContainer.css("height",height);
@@ -418,7 +421,6 @@
                 }
               } else{
                 if ($(".category-box-container").length > 6){
-                  console.log($(".category-box-container").length);
                   let height = ($(".category-box-container").outerHeight() * 6) + (parseInt($('.category-box-container').css('margin-bottom')) * 6) - 10;
                   let $categoriesContainer = $(".custom-categories-boxes-container");
                   $categoriesContainer.css("height",height);
@@ -563,8 +565,8 @@
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
     if (url.startsWith("/c/")){
-      var top = $('.category-title span').position().top - 3;
-      var left = $('.category-title span').position().left + $('.category-title span').width();
+      let top = $('.category-title span').position().top - 3;
+      let left = $('.category-title span').position().left + $('.category-title span').width();
       $('.category-notifications-button').css('top',top + 'px');
       $('.category-notifications-button').css('left',left + 'px');
     };
