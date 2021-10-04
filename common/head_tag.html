@@ -466,7 +466,7 @@
     </div>
     {{#if isAdmin}}
       {{categories-admin-dropdown
-        onChange=(action "selectCategoryAdminDropdownAction")
+        action=selectCategoryAdminDropdownAction
       }}
     {{/if}}
     <div class="custom-categories-boxes-container">
