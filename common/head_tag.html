@@ -466,7 +466,10 @@
     </div>
     {{#if isAdmin}}
       {{categories-admin-dropdown
-        action=selectCategoryAdminDropdownAction
+        onChange=(action "selectCategoryAdminDropdownAction")
+        options=(hash
+          triggerOnChangeOnTab=false
+        )
       }}
     {{/if}}
     <div class="custom-categories-boxes-container">
