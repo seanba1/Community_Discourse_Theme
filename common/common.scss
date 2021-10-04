@@ -2044,6 +2044,13 @@ body.category{
       letter-spacing: -0.15px;
       color: #676879;
       margin-bottom: 40px;
+      display: inline-block;
+      width: 90%;
+    }
+    .categories-admin-dropdown{
+      .dropdown-select-box-header{
+        border-radius: 4px;
+      }
     }
     .custom-categories-boxes-container {
       display: flex;
