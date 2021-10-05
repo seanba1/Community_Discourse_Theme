@@ -56,6 +56,11 @@ h3,
     }
   }
 }
+/ .categories-admin-dropdown{
+    .dropdown-select-box-header{
+      border-radius: 4px;
+    }
+  }
 .discourse-tags{
   a{
     background: #E6E9EF;
@@ -2047,10 +2052,8 @@ body.category{
       display: inline-block;
       width: 90%;
     }
-    .categories-admin-dropdown{
-      .dropdown-select-box-header{
-        border-radius: 4px;
-      }
+    a.categories-admin{
+      max-width: 9%;
     }
     .custom-categories-boxes-container {
       display: flex;
