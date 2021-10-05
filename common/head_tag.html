@@ -2,7 +2,14 @@
 <script type="text/discourse-plugin" version="0.8">
   api.onPageChange((url, title) => {
     if (url === "/" || url === "/?preview_theme_id=4988" || url === "/?preview_theme_id=38" || url === "/categories" || url === "/categories?preview_theme_id=4988"){
-      $('#navigation-bar .select-list a[href="/latest"]').click();
+      let thisUser = Discourse.User.current(); 
+      let isAdmin = false;
+      if (thisUser && thisUser.admin){
+        isAdmin = true;
+      }
+      if (!isAdmin){
+        $('#navigation-bar .select-list a[href="/latest"]').click();
+      }
     }
     if ((url === "/categories?preview_theme_id=38" || url === "/latest" || url === "/latest?preview_theme_id=4988" || url === "/latest?preview_theme_id=38" || url === "/new" || url === "/new?preview_theme_id=4988" || url === "/new?preview_theme_id=38")) {
       $('.custom-search-bar .search-widget .search-menu .search-input input[type="text"]').attr("placeholder", "Search topics, posts, users, or categories");
@@ -465,7 +472,7 @@
       Categories
     </div>
     {{#if isAdmin}}
-      {{categories-admin-dropdown}}
+      <a href="/categories">Categories page</a>
     {{/if}}
     <div class="custom-categories-boxes-container">
       {{#each categories as |c|}}
