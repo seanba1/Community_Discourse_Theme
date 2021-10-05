@@ -465,7 +465,7 @@
       Categories
     </div>
     {{#if isAdmin}}
-      {{categories-admin-dropdown onChange=(action "selectCategoryAdminDropdownAction")}}
+      {{categories-admin-dropdown}}
     {{/if}}
     <div class="custom-categories-boxes-container">
       {{#each categories as |c|}}
